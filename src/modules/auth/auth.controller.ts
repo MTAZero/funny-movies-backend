@@ -37,7 +37,7 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('/login')
     async login(@CurrentUser() user: currentUser, @Res() res) {
-        let ans = await this.authService.signTokenByUser(user);
+        const ans = await this.authService.signTokenByUser(user);
 
         return ResponseToClient(
             res,
@@ -53,7 +53,7 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('/my-info')
     async getMyInfo(@CurrentUser() user: currentUser, @Res() res) {
-        let result = await this.userService.getItemById(user._id);
+        const result = await this.userService.getItemById(user._id);
 
         return ResponseToClient(
             res,
@@ -70,15 +70,15 @@ export class AuthController {
     })
     @Post('/register')
     async register(@Res() res, @Body() user: RegisterInput) {
-        let new_user = {
+        const new_user = {
             ...user,
             ...{
                 status: 'active'
             }
         }
-        
-        let temp = await this.userService.insert(new_user);
-        let ans = await this.authService.signTokenByUser(temp);
+
+        const temp = await this.userService.insert(new_user);
+        const ans = await this.authService.signTokenByUser(temp);
 
         return ResponseToClient(
             res,

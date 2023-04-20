@@ -10,6 +10,9 @@ export class tbl_video_shares extends Document<any> {
     share_by: Types.ObjectId;
 
     @Prop()
+    url: string;
+
+    @Prop()
     title: string;
 
     @Prop()
@@ -28,6 +31,7 @@ export class tbl_video_shares extends Document<any> {
 export const tbl_video_shares_schema = SchemaFactory.createForClass(tbl_video_shares);
 
 tbl_video_shares_schema.index({
+    url: 'text',
     title: 'text',
     description: 'text'
 });

@@ -3,8 +3,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { NestValidationPipe } from './modules/helper/validationInjection';
 
-// const ytdl = require('ytdl-core');
-
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
@@ -29,7 +27,6 @@ async function bootstrap() {
 
     await app.listen(process.env.PORT);
 
-    // ytdl.getInfo('https://www.youtube.com/watch?v=QpuISlkx1xI&t=246s').then(info => {
-    // console.log(info.videoDetails);
+    
 }
 bootstrap();

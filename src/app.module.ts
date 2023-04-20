@@ -8,6 +8,7 @@ import {
 } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { VideoSharesModule } from './modules/video-shares/video-shares.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { DatabaseModule } from './modules/database/database.module';
         MongooseModule.forRoot(process.env.CONNECT_STRING),
         AuthModule,
         DatabaseModule,
+        VideoSharesModule,
     ],
     controllers: [],
 })
