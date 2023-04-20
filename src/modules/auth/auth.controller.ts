@@ -76,7 +76,9 @@ export class AuthController {
                 status: 'active'
             }
         }
-        let ans = await this.userService.insert(new_user);
+        
+        let temp = await this.userService.insert(new_user);
+        let ans = await this.authService.signTokenByUser(temp);
 
         return ResponseToClient(
             res,
