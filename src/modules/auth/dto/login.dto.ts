@@ -9,7 +9,7 @@ export class LoginInput {
     @ApiProperty({ name: 'email', description: 'email' })
     @IsString()
     @IsEmail()
-    email: string;
+    username: string;
 
     @ApiProperty({ name: 'password', description: 'password' })
     @IsString()

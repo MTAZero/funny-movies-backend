@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseFactoryService } from './base-services';
 import * as bcrypt from 'bcrypt';
@@ -51,7 +51,7 @@ export class UserFactoryService extends BaseFactoryService<tbl_users> {
                 },
                 {
                     $limit: limit,
-                }
+                },
             ])
             .exec();
 
@@ -72,6 +72,11 @@ export class UserFactoryService extends BaseFactoryService<tbl_users> {
     }
 
     async insert(entity: any): Promise<any> {
+        let cnt = await this.userModel
+            .find({ email: entity.email })
+            .countDocuments();
+        if (cnt > 0) throw new BadRequestException('Already exits');
+
         entity.created_date = new Date().getTime();
         entity.last_update = new Date().getTime();
 
@@ -117,5 +122,4 @@ export class UserFactoryService extends BaseFactoryService<tbl_users> {
             return false;
         }
     }
-
 }

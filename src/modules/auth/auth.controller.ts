@@ -69,8 +69,14 @@ export class AuthController {
         type: RegisterInput,
     })
     @Post('/register')
-    async register(@Res() res) {
-        let ans = '';
+    async register(@Res() res, @Body() user: RegisterInput) {
+        let new_user = {
+            ...user,
+            ...{
+                status: 'active'
+            }
+        }
+        let ans = await this.userService.insert(new_user);
 
         return ResponseToClient(
             res,

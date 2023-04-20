@@ -6,7 +6,7 @@ import {
 } from '@nestjs/class-validator';
 
 export class RegisterInput {
-    @ApiProperty({ name: 'username', description: 'username' })
+    @ApiProperty({ name: 'email', description: 'email' })
     @IsString()
     @IsEmail()
     email: string;

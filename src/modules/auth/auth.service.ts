@@ -13,7 +13,7 @@ export class AuthService {
 
     async signTokenByUser(user: any) {
         let payload = {
-            username: user.username,
+            email: user.email,
             _id: user._id,
         };
 
@@ -23,10 +23,10 @@ export class AuthService {
         };
     }
 
-    async validateUser(username: string, password: string): Promise<any> {
+    async validateUser(email: string, password: string): Promise<any> {
         try {
             let user = await this.userService.getFirstItemByFilter({
-                username: username,
+                email: email,
             });
             if (!user)
                 return {
