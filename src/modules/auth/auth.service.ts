@@ -33,11 +33,13 @@ export class AuthService {
                     isValidate: false,
                 };
 
-            if (await bcrypt.compare(password, user.password_hash))
+            if (await bcrypt.compare(password, user.password_hash)){
+                delete user.password_hash;
                 return {
                     isValidate: true,
                     user,
                 };
+            }
 
             return {
                 isValidate: false,

@@ -89,7 +89,9 @@ export class VideoSharesController {
             {},
             pagination.offset,
             pagination.size,
-            {},
+            {
+                created_date: -1
+            },
             textSearch,
         );
 
