@@ -83,14 +83,42 @@ export class VideoSharesController {
         @CurrentUser() user: currentUser,
     ) {
         let textSearch: string = query.keyword ? query.keyword : '';
-
         let data = await this.videoShareFactoryService.getUserItemsByFilter(
             user._id,
             {},
             pagination.offset,
             pagination.size,
             {
-                created_date: -1
+                created_date: -1,
+            },
+            textSearch,
+        );
+
+
+        return ResponseToClient(
+            res,
+            true,
+            ResponseCode.SUCCESS,
+            ResponseMessage.SUCCESS,
+            data,
+        );
+    }
+
+    @ApiTags('Share-Video')
+    @Get('/public')
+    async GetPublicListShareVideo(
+        @Res() res,
+        @Query() query: PaginateParam,
+        @Pagination() pagination: PaginationQuery,
+    ) {
+        let textSearch: string = query.keyword ? query.keyword : '';
+
+        let data = await this.videoShareFactoryService.getItemsByFilter(
+            {},
+            pagination.offset,
+            pagination.size,
+            {
+                created_date: -1,
             },
             textSearch,
         );
@@ -153,7 +181,11 @@ export class VideoSharesController {
     @ApiParam({ name: 'id', type: 'String', required: true })
     @UseGuards(JwtAuthGuard)
     @Post('/dislike/:id')
-    async DislikeVoteVideo(@Res() res, @Param('id') id: string, @CurrentUser() user: currentUser,) {
+    async DislikeVoteVideo(
+        @Res() res,
+        @Param('id') id: string,
+        @CurrentUser() user: currentUser,
+    ) {
         let ans;
 
         const share_video = await this.videoShareFactoryService.getItemById(id);

@@ -12,8 +12,7 @@ export class VideoShareFactoryService extends BaseFactoryService<tbl_users> {
         super(video_share_model);
     }
 
-    async getUserItemsByFilter(
-        userId: string = null,
+    async getItemsByFilter(
         filter: object = {},
         skip: number = 0,
         limit: number = 10,
@@ -48,6 +47,36 @@ export class VideoShareFactoryService extends BaseFactoryService<tbl_users> {
                 },
                 {
                     $limit: limit,
+                },
+                {
+                    $lookup: {
+                        from: tbl_users.name,
+                        let: {
+                            share_by: {
+                                $toObjectId: '$share_by',
+                            },
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$share_by', '$_id'],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'share_by_users',
+                    },
+                },
+                {
+                    $addFields: {
+                        share_by_user: {
+                            $arrayElemAt: ['$share_by_users', 0],
+                        },
+                    },
+                },
+                {
+                    $unset: 'share_by_users',
                 },
                 {
                     $lookup: {
@@ -115,7 +144,159 @@ export class VideoShareFactoryService extends BaseFactoryService<tbl_users> {
                 {
                     $unset: 'dislikes',
                 },
-            
+
+                {
+                    $unset: 'votes',
+                },
+            ])
+            .exec();
+
+        let total = await this.countByFilter(filter);
+        let pageIndex = skip / limit + 1;
+
+        return {
+            items: ans,
+            total: total,
+            size: limit,
+            page: pageIndex,
+            offset: skip,
+        };
+    }
+
+    async getUserItemsByFilter(
+        userId: string = null,
+        filter: object = {},
+        skip: number = 0,
+        limit: number = 10,
+        sort: object = { _id: 1 },
+        textsearch: string = '',
+    ) {
+        if (textsearch != '')
+            filter = {
+                ...filter,
+                ...{
+                    $text: {
+                        $search: `"${textsearch}"`,
+                    },
+                },
+            };
+
+        if (Object.keys(sort).length === 0)
+            sort = {
+                _id: 1,
+            };
+
+        let ans = await this.video_share_model
+            .aggregate([
+                {
+                    $match: filter,
+                },
+                {
+                    $sort: sort,
+                },
+                {
+                    $skip: skip,
+                },
+                {
+                    $limit: limit,
+                },
+                {
+                    $lookup: {
+                        from: tbl_users.name,
+                        let: {
+                            share_by: {
+                                $toObjectId: '$share_by',
+                            },
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$share_by', '$_id'],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'share_by_users',
+                    },
+                },
+                {
+                    $addFields: {
+                        share_by_user: {
+                            $arrayElemAt: ['$share_by_users', 0],
+                        },
+                    },
+                },
+                {
+                    $unset: 'share_by_users',
+                },
+                {
+                    $lookup: {
+                        from: tbl_votes.name,
+                        let: {
+                            id: '$_id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$id', '$video'],
+                                    },
+                                },
+                            },
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [1, '$vote_value'],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'likes',
+                    },
+                },
+                {
+                    $addFields: {
+                        like: { $size: '$likes' },
+                    },
+                },
+                {
+                    $unset: 'likes',
+                },
+                {
+                    $lookup: {
+                        from: tbl_votes.name,
+                        let: {
+                            id: '$_id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$id', '$video'],
+                                    },
+                                },
+                            },
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: [-1, '$vote_value'],
+                                    },
+                                },
+                            },
+                        ],
+                        as: 'dislikes',
+                    },
+                },
+                {
+                    $addFields: {
+                        dislike: { $size: '$dislikes' },
+                    },
+                },
+                {
+                    $unset: 'dislikes',
+                },
+
                 {
                     $unset: 'votes',
                 },
