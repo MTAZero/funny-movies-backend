@@ -80,10 +80,12 @@ export class VideoSharesController {
         @Res() res,
         @Query() query: PaginateParam,
         @Pagination() pagination: PaginationQuery,
+        @CurrentUser() user: currentUser,
     ) {
         let textSearch: string = query.keyword ? query.keyword : '';
 
-        let data = await this.videoShareFactoryService.getItemsByFilter(
+        let data = await this.videoShareFactoryService.getUserItemsByFilter(
+            user._id,
             {},
             pagination.offset,
             pagination.size,
