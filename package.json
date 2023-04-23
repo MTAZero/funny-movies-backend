@@ -79,18 +79,40 @@
     "jest": {
         "moduleFileExtensions": [
             "js",
+            "jsx",
             "json",
+            "node",
             "ts"
         ],
-        "rootDir": "src",
-        "testRegex": ".*\\.spec\\.ts$",
+        "rootDir": "./",
+        "modulePaths": [
+            "<rootDir>"
+        ],
+        "testRegex": ".spec.ts$",
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
-        "collectCoverageFrom": [
-            "**/*.(t|j)s"
+        "collectCoverage": true,
+        "setupFiles": [
+            "<rootDir>/jest/setEnvVars.ts"
         ],
-        "coverageDirectory": "../coverage",
-        "testEnvironment": "node"
+        "coveragePathIgnorePatterns": [
+            "<rootDir>/src/decorators/",
+            "<rootDir>/src/guards/",
+            "<rootDir>/src/helpers/",
+            "<rootDir>/src/modules/media/",
+            ".repository.ts",
+            ".input.ts",
+            ".module.ts"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.service.ts",
+            "src/**/*.controller.ts"
+        ],
+        "coverageDirectory": "./coverage",
+        "testEnvironment": "node",
+        "moduleDirectories": [
+            "node_modules"
+        ]
     }
 }

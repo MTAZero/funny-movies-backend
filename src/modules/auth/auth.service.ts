@@ -53,7 +53,7 @@ export class AuthService {
         try {
             let data = await this.jwtService.decode(token);
 
-            let userId = data.sub;
+            let userId = data;
             let user = await this.userService.getItemById(userId);
 
             return user;
