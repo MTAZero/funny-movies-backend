@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseFactoryService } from './base-services';
-import { tbl_users, tbl_video_shares, tbl_votes } from '../schemas';
+import { tbl_comments, tbl_users, tbl_video_shares, tbl_votes } from '../schemas';
 import { ObjectId } from 'mongoose';
 
 @Injectable()
@@ -148,6 +148,24 @@ export class VideoShareFactoryService extends BaseFactoryService<tbl_users> {
                 {
                     $unset: 'votes',
                 },
+                {
+                    $lookup: {
+                        from: tbl_comments.name,
+                        let: {
+                            id: '$_id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$id', '$video'],
+                                    },
+                                },
+                            }
+                        ],
+                        as: 'comments',
+                    },
+                }
             ])
             .exec();
 
@@ -336,6 +354,24 @@ export class VideoShareFactoryService extends BaseFactoryService<tbl_users> {
                 {
                     $unset: 'votes',
                 },
+                {
+                    $lookup: {
+                        from: tbl_comments.name,
+                        let: {
+                            id: '$_id',
+                        },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$id', '$video'],
+                                    },
+                                },
+                            }
+                        ],
+                        as: 'comments',
+                    },
+                }
             ])
             .exec();
 

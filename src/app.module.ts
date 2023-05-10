@@ -9,6 +9,7 @@ import {
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { VideoSharesModule } from './modules/video-shares/video-shares.module';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { VideoSharesModule } from './modules/video-shares/video-shares.module';
         AuthModule,
         DatabaseModule,
         VideoSharesModule,
+        CommentsModule,
     ],
     controllers: [],
 })
